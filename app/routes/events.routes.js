@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var Event = require('../models/events.model');
+var events = require('../controllers/events.controller');
 
 router.use(function(req, res, next) {
     // do logging
@@ -12,64 +12,15 @@ router.use(function(req, res, next) {
 router.route('/events')
 
     // create a event (accessed at POST api/events)
-    .post(function(req, res) {
-
-        var signupEvent = new Event();      // create a new instance of the Event model
-        signupEvent.name = req.body.name;
-        signupEvent.description = req.body.description;
-        signupEvent.enabled = req.body.enabled;
-
-        // save the event and check for errors
-        signupEvent.save(function(err) {
-            if (err)
-                res.send(err);
-
-            res.json({ message: 'Event created!' });
-        });
-
-    })
-
-    .get(function(req, res) {
-        Event.find(function(err, events) {
-            if (err)
-                res.send(err);
-
-            res.json(events);
-        });
-    });
+    .post(events.create)
+    // get a list of events
+    .get(events.list);
 
 router.route('/events/:event_id')
 
     // get the event with that id (accessed at GET /api/events/:event_id)
-    .get(function(req, res) {
-        Event.findById(req.params.event_id, function(err, signupEvent) {
-            if (err)
-                res.send(err);
-            res.json(signupEvent);
-        });
-    })
-
-    .put(function(req, res) {
-
-        // use our event model to find the event we want
-        Event.findById(req.params.event_id, function(err, signupEvent) {
-
-            if (err)
-                res.send(err);
-
-            signupEvent.name = req.body.name;
-            signupEvent.description = req.body.description;
-            signupEvent.enabled = req.body.enabled;
-
-            // save the event
-            signupEvent.save(function(err) {
-                if (err)
-                    res.send(err);
-
-                res.json({ message: 'Event updated!' });
-            });
-
-        });
-    });
+    .get(events.single).
+    // update the event with that id (accessed at PUT /api/events/:event_id)
+    .put(events.update);
 
 module.exports = router;
