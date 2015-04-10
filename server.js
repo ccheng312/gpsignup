@@ -21,6 +21,16 @@ db.once('open', function (callback) {
 });
 
 
+var router = require('./app/routes')(app);
+
+// Error Handling
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+});
+
+module.exports = app;
+
+
 // START THE SERVER
 // =============================================================================
 app.listen(port);
