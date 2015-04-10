@@ -10,8 +10,6 @@ var mongoose   = require('mongoose');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;        // set our port
-
 // Configure mongoose to connect to mongodb
 mongoose.connect('mongodb://localhost/test');
 var db = mongoose.connection;
@@ -30,6 +28,7 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
+var port = process.env.PORT || 8080;
 
 // START THE SERVER
 // =============================================================================
