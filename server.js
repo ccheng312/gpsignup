@@ -18,7 +18,7 @@ db.once('open', function (callback) {
     console.log("Connection success to DB");
 });
 
-
+require('./app/models');
 var router = require('./app/routes')(app);
 
 // Error Handling
