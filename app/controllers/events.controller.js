@@ -64,9 +64,14 @@ exports.delete = function(req, res) {
 /**
  * Middleware
  */
-exports.eventById = function(req, res, next, id) { Event.findById(id).exec(function(err, signupEvent) {
-        if (err) { return next(err); }
-        if (!signupEvent) { return next(new Error('Failed to load event ' + id)); }
+exports.eventById = function(req, res, next, id) {
+    Event.findById(id).exec(function(err, signupEvent) {
+        if (err) {
+            return next(err);
+        }
+        if (!signupEvent) {
+            return next(new Error('Failed to load event ' + id));
+        }
         req.signupEvent = signupEvent;
         next();
     });
