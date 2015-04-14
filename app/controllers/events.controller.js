@@ -134,6 +134,10 @@ exports.eventById = function(req, res, next, id) {
             current_start_date.setHours(start_date.getHours(), start_date.getMinutes());
             current_end_date.setDate(current_end_date.getDate() + 1);
         }
+        current_start_date = new Date(start_date);
+        current_end_date = new Date(end_date);
+        current_end_date.setMonth(start_date.getMonth());
+        current_end_date.setDate(start_date.getDate());
     }
  }
 
