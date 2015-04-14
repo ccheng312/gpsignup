@@ -36,7 +36,7 @@ exports.list = function(req, res) {
 };
 
 exports.read = function(req, res) {
-    res.json(req.signupEvent);
+    res.json(req.thisLocation);
 };
 
 exports.update = function(req, res) {
