@@ -14,8 +14,9 @@ var SlotSchema = new Schema({
     end_time: { type: Date },
     capacity: { type: Number, min: 0 },
     quantity: { type: Number, min: 0 },
-    enabled: { type: Boolean }
-    // Need some foreign key into the event it's part of and the location
+    enabled: { type: Boolean },
+    location: { type: Schema.Types.ObjectId, required: true, ref: 'Location'},
+    slot_event: { type: Schema.Types.ObjectId, required: true, ref: 'Event' }
 
 });
 
