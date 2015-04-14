@@ -23,7 +23,7 @@ router.route('/slots/:slotId')
     .put(slots.update)
     .delete(slots.delete);
 
-// This middleware makes the event available as req.signupEvent when you supply eventId
+// This middleware makes the slot available as req.slot when you supply slotId
 router.param('slotId', slots.slotById);
 
 module.exports = router;
