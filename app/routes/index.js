@@ -1,7 +1,9 @@
+var glob = require('glob');
+
 module.exports = function (app) {
-    app.use('/api', require('./main.routes'));
-    app.use('/api', require('./events.routes'));
-    app.use('/api', require('./slots.routes'));
-    app.use('/api', require('./locations.routes'));
-    app.use('/api', require('./person.routes'));
+    console.log('Requiring routes');
+    glob.sync('./*.routes.js', { cwd: __dirname })
+        .forEach(function(file) {
+            app.use('/api', require(file));
+        });
 };
