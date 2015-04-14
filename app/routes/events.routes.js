@@ -18,6 +18,9 @@ router.route('/events/:eventId')
     .put(events.update)
     .delete(events.delete);
 
+router.route('/events/:eventId/slots')
+    .get(events.getSlots);
+
 // This middleware makes the event available as req.signupEvent when you supply eventId
 router.param('eventId', events.eventById);
 

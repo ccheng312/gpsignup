@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
     Event = mongoose.model('Event'),
+    Slot = mongoose.model('Slot'),
     _ = require('lodash');
 
 /**
@@ -19,8 +20,11 @@ exports.create = function(req, res) {
             // TODO: make sure this works as expected.
             return res.send(err);
         }
-
-        res.json({ message: 'Event created!' });
+        generateSlots(signupEvent);
+        res.json({
+            message: 'Event created!',
+            id: signupEvent._id
+        });
     });
 };
 
@@ -61,6 +65,18 @@ exports.delete = function(req, res) {
     });
 };
 
+exports.getSlots = function(req, res) {
+    var signupEvent = req.signupEvent;
+
+    Slot.find({ slot_event: signupEvent._id })
+        .exec(function (err, slots) {
+            if (err) {
+                return res.send(err);
+            }
+            res.json(slots);
+        });
+};
+
 /**
  * Middleware
  */
@@ -76,3 +92,50 @@ exports.eventById = function(req, res, next, id) {
         next();
     });
 };
+
+
+/**
+ * Helper Functions
+ */
+
+ function generateSlots(signupEvent) {
+    var start_date = signupEvent.start;
+    var end_date = signupEvent.end;
+    var duration = signupEvent.duration;
+    var slot_params = {
+        start_time: null,
+        capacity:  signupEvent.default_capacity,
+        quantity: 0,
+        enabled: true,
+        slot_location: null,
+        slot_event: signupEvent._id
+    };
+
+    var current_start_date = new Date(start_date);
+    var current_end_date = new Date(end_date);
+    current_end_date.setMonth(start_date.getMonth());
+    current_end_date.setDate(start_date.getDate());
+
+    for (var i = 0; i < signupEvent.locations.length; i++) {
+        slot_params.slot_location = signupEvent.locations[i];
+        while (current_end_date <= end_date) {
+            while (current_start_date < current_end_date) {
+                slot_params.start_time = new Date(current_start_date);
+                var newSlot = new Slot(slot_params);
+                newSlot.save(function(err) {
+                    if (err) {
+                    // TODO: make sure this works as expected.
+                        return res.send(err);
+                    }
+                });
+                current_start_date.setMinutes(current_start_date.getMinutes() + duration);
+            }
+            current_start_date.setDate(current_start_date.getDate() + 1);
+            current_start_date.setHours(start_date.getHours(), start_date.getMinutes());
+            current_end_date.setDate(current_end_date.getDate() + 1);
+        }
+    }
+ }
+
+
+
