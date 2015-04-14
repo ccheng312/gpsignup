@@ -1,17 +1,18 @@
 var gulp = require('gulp');
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 
-function runCommand(command) {
-  return function (cb) {
-    exec(command, function (err, stdout, stderr) {
-      console.log(stdout);
-      console.log(stderr);
-      cb(err);
-    });
+function runCommand(command, showOutput) {
+  return function () {
+    var args = command.split(' ');
+    if (showOutput) {
+        spawn(args.shift(), args, { stdio: 'inherit' });
+    } else {
+        spawn(args.shift(), args);
+    }
   }
 }
 
 gulp.task('start-mongo', runCommand('mongod --dbpath .db'));
-gulp.task('start-server', runCommand('nodemon --watch app/ server.js'));
+gulp.task('start-server', runCommand('nodemon --watch app/ server.js', true));
 
 gulp.task('default', ['start-mongo', 'start-server']);
