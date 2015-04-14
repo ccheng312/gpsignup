@@ -3,12 +3,6 @@ var router = express.Router();
 
 var events = require('../controllers/events.controller');
 
-router.use(function(req, res, next) {
-    // do logging
-    console.log('Something is happening on event.');
-    next(); // make sure we go to the next routes and don't stop here
-});
-
 router.route('/events')
 
     // create a event (accessed at POST api/events)

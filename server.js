@@ -4,14 +4,27 @@ var express    = require('express');
 var app        = express();
 var bodyParser = require('body-parser');
 var mongoose   = require('mongoose');
+var logger = require('morgan');
 
 // Set the environment
-if (!process.env.NODE_ENV) {
+var env = process.env.NODE_ENV;
+if (!env) {
     console.log('No environment found! Will use dev environment.');
-    process.env.NODE_ENV = 'development';
+    env = process.env.NODE_ENV = 'development';
 }
-console.log('App environment: ' + process.env.NODE_ENV);
-var config = require('./config')(process.env.NODE_ENV);
+console.log('App environment: ' + env);
+var config = require('./config')(env);
+
+// Environment dependent middleware
+if (env === 'development') {
+    // Request logging
+    app.use(logger('dev'));
+
+    // Disable views cache
+    app.set('view cache', false);
+} else if (process.env.NODE_ENV === 'production') {
+    app.locals.cache = 'memory';
+}
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
