@@ -5,21 +5,32 @@ var app        = express();
 var bodyParser = require('body-parser');
 var mongoose   = require('mongoose');
 
+// Set the environment
+if (!process.env.NODE_ENV) {
+    console.log('No environment found! Will use dev environment.');
+    process.env.NODE_ENV = 'development';
+}
+console.log('App environment: ' + process.env.NODE_ENV);
+var config = require('./config')(process.env.NODE_ENV);
+
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Configure mongoose to connect to mongodb
-mongoose.connect('mongodb://localhost/test');
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function (callback) {
-    console.log("Connection success to DB");
+mongoose.connect(config.db, function(err) {
+    if (err) {
+        console.error('Could not connect to MongoDB!');
+        console.log(err);
+    } else {
+        console.log("Connection success to MongoDB");
+    }
 });
 
+// Register models and routes
 require('./app/models');
-var router = require('./app/routes')(app);
+require('./app/routes')(app);
 
 // Error Handling
 app.use(function(err, req, res, next) {
@@ -28,9 +39,7 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-var port = process.env.PORT || 8080;
-
 // START THE SERVER
 // =============================================================================
-app.listen(port);
-console.log('Started server on port ' + port);
+app.listen(config.port);
+console.log('Started server on port ' + config.port);
