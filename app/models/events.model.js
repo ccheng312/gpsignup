@@ -7,10 +7,10 @@ var EventSchema   = new Schema({
     start: { type: Date },
     end: { type: Date },
     duration: { type: Number, min: 0 },
-    default_capacity: { type: Number, min: 0 },
+    defaultCapacity: { type: Number, min: 0 },
     //creator: { type: String, maxlength: 100 },
     //password: { type: String, maxlength: 100 },
-    is_private: { type: Boolean },
+    isPrivate: { type: Boolean },
     enabled: { type: Boolean },
     locations: [{ type: Schema.Types.ObjectId, ref: 'Location' }]
 });

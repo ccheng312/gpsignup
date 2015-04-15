@@ -100,30 +100,30 @@ exports.eventById = function(req, res, next, id) {
  */
 
  function generateSlots(signupEvent) {
-    var start_date = signupEvent.start;
-    var end_date = signupEvent.end;
+    var startDate = signupEvent.start;
+    var endDate = signupEvent.end;
     var duration = moment.duration(signupEvent.duration, 'minutes');
     var slot_params = {
         start_time: null,
-        capacity:  signupEvent.default_capacity,
+        capacity:  signupEvent.defaultCapacity,
         quantity: 0,
         enabled: true,
         slot_location: null,
         slot_event: signupEvent._id
     };
 
-    var current_start_date = moment(start_date);
-    var current_end_date = moment(end_date);
-    current_end_date.month(current_start_date.month()).date(current_start_date.date());
+    var currentStartDate = moment(startDate);
+    var currentEndDate = moment(endDate);
+    currentEndDate.month(currentStartDate.month()).date(currentStartDate.date());
 
     for (var i = 0; i < signupEvent.locations.length; i++) {
         //Loop through each location so we do slots for each location
         slot_params.slot_location = signupEvent.locations[i];
-        while (!current_end_date.isAfter(end_date, 'day')) {
+        while (!currentEndDate.isAfter(endDate, 'day')) {
             // While our current end date hasn't hit the final end date for the event
-            while (current_start_date.isBefore(current_end_date)) {
+            while (currentStartDate.isBefore(currentEndDate)) {
                 // While our current looping start time is before the day's end time
-                slot_params.start_time = current_start_date.clone().toDate();
+                slot_params.start_time = currentStartDate.clone().toDate();
                 var newSlot = new Slot(slot_params);
                 newSlot.save(function(err) {
                     if (err) {
@@ -132,18 +132,18 @@ exports.eventById = function(req, res, next, id) {
                     }
                 });
                 // Add the duration to our next slot time
-                current_start_date.add(duration);
+                currentStartDate.add(duration);
             }
             // Reset the start time back to original time
-            current_start_date.hours(start_date.getHours()).minutes(start_date.getMinutes());
+            currentStartDate.hours(startDate.getHours()).minutes(startDate.getMinutes());
             // Increase the start and end dates by 1 day to get to next day
-            current_start_date.add(1, 'days');
-            current_end_date.add(1, 'days');
+            currentStartDate.add(1, 'days');
+            currentEndDate.add(1, 'days');
         }
         // Hard reset of current start and end date to original values
-        current_start_date = moment(start_date);
-        current_end_date = moment(end_date);
-        current_end_date.month(current_start_date.month()).date(current_start_date.date());
+        currentStartDate = moment(startDate);
+        currentEndDate = moment(endDate);
+        currentEndDate.month(currentStartDate.month()).date(currentStartDate.date());
     }
  }
 
