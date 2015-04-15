@@ -69,7 +69,7 @@ exports.delete = function(req, res) {
 exports.getSlots = function(req, res) {
     var signupEvent = req.signupEvent;
 
-    Slot.find({ slot_event: signupEvent._id })
+    Slot.find({ slotEvent: signupEvent._id })
         .exec(function (err, slots) {
             if (err) {
                 return res.send(err);
@@ -103,13 +103,13 @@ exports.eventById = function(req, res, next, id) {
     var startDate = signupEvent.start;
     var endDate = signupEvent.end;
     var duration = moment.duration(signupEvent.duration, 'minutes');
-    var slot_params = {
-        start_time: null,
+    var slotParams = {
+        startTime: null,
         capacity:  signupEvent.defaultCapacity,
         quantity: 0,
         enabled: true,
-        slot_location: null,
-        slot_event: signupEvent._id
+        slotLocation: null,
+        slotEvent: signupEvent._id
     };
 
     var currentStartDate = moment(startDate);
@@ -118,13 +118,13 @@ exports.eventById = function(req, res, next, id) {
 
     for (var i = 0; i < signupEvent.locations.length; i++) {
         //Loop through each location so we do slots for each location
-        slot_params.slot_location = signupEvent.locations[i];
+        slotParams.slotLocation = signupEvent.locations[i];
         while (!currentEndDate.isAfter(endDate, 'day')) {
             // While our current end date hasn't hit the final end date for the event
             while (currentStartDate.isBefore(currentEndDate)) {
                 // While our current looping start time is before the day's end time
-                slot_params.start_time = currentStartDate.clone().toDate();
-                var newSlot = new Slot(slot_params);
+                slotParams.startTime = currentStartDate.clone().toDate();
+                var newSlot = new Slot(slotParams);
                 newSlot.save(function(err) {
                     if (err) {
                     // TODO: make sure this works as expected.
