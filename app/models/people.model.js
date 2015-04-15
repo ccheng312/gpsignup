@@ -10,10 +10,10 @@ var mongoose = require('mongoose'),
  * Slot Schema
  */
 var PersonSchema = new Schema({
-    firstName: { type: String, maxlength: 30 },
-    lastName: { type: String, maxlength: 30 },
-    email: { type: String, maxlength: 100 },
-    phone: { type: String, min: 10, max:14 },
+    firstName: { type: String, required: true, maxlength: 30 },
+    lastName: { type: String, required: true, maxlength: 30 },
+    email: { type: String, required: true, maxlength: 100 },
+    phone: { type: String, required: true, min: 10, max:14 },
     personCode: { type: String, maxlength: 100 }
 });
 
