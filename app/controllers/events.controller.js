@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
     Event = mongoose.model('Event'),
     Slot = mongoose.model('Slot'),
+    moment = require('moment'),
     _ = require('lodash');
 
 /**
@@ -101,7 +102,7 @@ exports.eventById = function(req, res, next, id) {
  function generateSlots(signupEvent) {
     var start_date = signupEvent.start;
     var end_date = signupEvent.end;
-    var duration = signupEvent.duration;
+    var duration = moment.duration(signupEvent.duration, 'minutes');
     var slot_params = {
         start_time: null,
         capacity:  signupEvent.default_capacity,
@@ -111,16 +112,18 @@ exports.eventById = function(req, res, next, id) {
         slot_event: signupEvent._id
     };
 
-    var current_start_date = new Date(start_date);
-    var current_end_date = new Date(end_date);
-    current_end_date.setMonth(start_date.getMonth());
-    current_end_date.setDate(start_date.getDate());
+    var current_start_date = moment(start_date);
+    var current_end_date = moment(end_date);
+    current_end_date.month(current_start_date.month()).date(current_start_date.date());
 
     for (var i = 0; i < signupEvent.locations.length; i++) {
+        //Loop through each location so we do slots for each location
         slot_params.slot_location = signupEvent.locations[i];
-        while (current_end_date <= end_date) {
-            while (current_start_date < current_end_date) {
-                slot_params.start_time = new Date(current_start_date);
+        while (!current_end_date.isAfter(end_date, 'day')) {
+            // While our current end date hasn't hit the final end date for the event
+            while (current_start_date.isBefore(current_end_date)) {
+                // While our current looping start time is before the day's end time
+                slot_params.start_time = current_start_date.clone().toDate();
                 var newSlot = new Slot(slot_params);
                 newSlot.save(function(err) {
                     if (err) {
@@ -128,16 +131,19 @@ exports.eventById = function(req, res, next, id) {
                         return res.send(err);
                     }
                 });
-                current_start_date.setMinutes(current_start_date.getMinutes() + duration);
+                // Add the duration to our next slot time
+                current_start_date.add(duration);
             }
-            current_start_date.setDate(current_start_date.getDate() + 1);
-            current_start_date.setHours(start_date.getHours(), start_date.getMinutes());
-            current_end_date.setDate(current_end_date.getDate() + 1);
+            // Reset the start time back to original time
+            current_start_date.hours(start_date.getHours()).minutes(start_date.getMinutes());
+            // Increase the start and end dates by 1 day to get to next day
+            current_start_date.add(1, 'days');
+            current_end_date.add(1, 'days');
         }
-        current_start_date = new Date(start_date);
-        current_end_date = new Date(end_date);
-        current_end_date.setMonth(start_date.getMonth());
-        current_end_date.setDate(start_date.getDate());
+        // Hard reset of current start and end date to original values
+        current_start_date = moment(start_date);
+        current_end_date = moment(end_date);
+        current_end_date.month(current_start_date.month()).date(current_start_date.date());
     }
  }
 
