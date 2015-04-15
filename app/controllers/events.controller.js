@@ -68,8 +68,14 @@ exports.delete = function(req, res) {
 
 exports.getSlots = function(req, res) {
     var signupEvent = req.signupEvent;
+    var queryParams = { slotEvent: signupEvent._id };
 
-    Slot.find({ slotEvent: signupEvent._id })
+    if (req.query.slotLocation) {
+        console.log("Found slot location");
+        queryParams.slotLocation = req.query.slotLocation;
+    }
+
+    Slot.find(queryParams)
         .exec(function (err, slots) {
             if (err) {
                 return res.send(err);
