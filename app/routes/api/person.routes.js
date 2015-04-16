@@ -4,7 +4,7 @@
  * Module Dependencies
  */
 var express = require('express');
-var people = require('../controllers/people.controller');
+var people = require('../../controllers/people.controller');
 
 
 /**

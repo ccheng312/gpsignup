@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var events = require('../controllers/events.controller');
+var events = require('../../controllers/events.controller');
 
 router.route('/events')
 

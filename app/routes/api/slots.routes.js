@@ -4,7 +4,7 @@
  * Module Dependencies
  */
 var express = require('express');
-var slots = require('../controllers/slots.controller');
+var slots = require('../../controllers/slots.controller');
 
 
 /**

@@ -43,7 +43,8 @@ mongoose.connect(config.db, function(err) {
 
 // Register models and routes
 require('./app/models');
-require('./app/routes')(app);
+require('./app/routes/api')(app);
+require('./app/routes/admin')(app);
 
 // Error Handling
 app.use(function(err, req, res, next) {
