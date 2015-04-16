@@ -16,16 +16,13 @@ exports.create = function(req, res) {
     var signupEvent = new Event(req.body);
 
     // save the event and check for errors
-    signupEvent.save(function(err) {
+    signupEvent.save(function(err, evt) {
         if (err) {
             // TODO: make sure this works as expected.
             return res.send(err);
         }
         generateSlots(signupEvent);
-        res.json({
-            message: 'Event created!',
-            id: signupEvent._id
-        });
+        res.send(evt);
     });
 };
 
@@ -35,23 +32,22 @@ exports.list = function(req, res) {
         if (err) {
             return res.send(err);
         }
-
-        res.json(events);
+        res.send(events);
     });
 };
 
 exports.read = function(req, res) {
-    res.json(req.signupEvent);
+    res.send(req.signupEvent);
 };
 
 exports.update = function(req, res) {
     var signupEvent = _.extend(req.signupEvent, req.body);
 
-    signupEvent.save(function(err) {
+    signupEvent.save(function(err, evt) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Event updated!' });
+        res.send(evt);
     });
 };
 
@@ -62,7 +58,7 @@ exports.delete = function(req, res) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Event deleted!' });
+        res.send();
     });
 };
 
@@ -80,7 +76,7 @@ exports.getSlots = function(req, res) {
             if (err) {
                 return res.send(err);
             }
-            res.json(slots);
+            res.send(slots);
         });
 };
 

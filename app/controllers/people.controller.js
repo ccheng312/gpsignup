@@ -15,13 +15,13 @@ exports.create = function(req, res) {
     var person = new Person(req.body);
 
     // save the person and check for errors
-    person.save(function(err) {
+    person.save(function(err, person) {
         if (err) {
             // TODO: make sure this works as expected.
             return res.send(err);
         }
 
-        res.json({ message: 'Person created!' });
+        res.send(person);
     });
 };
 
@@ -32,22 +32,22 @@ exports.list = function(req, res) {
             return res.send(err);
         }
 
-        res.json(people);
+        res.send(people);
     });
 };
 
 exports.read = function(req, res) {
-    res.json(req.person);
+    res.send(req.person);
 };
 
 exports.update = function(req, res) {
     var person = _.extend(req.person, req.body);
 
-    person.save(function(err) {
+    person.save(function(err, person) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Person updated!' });
+        res.send(person);
     });
 };
 
@@ -58,7 +58,7 @@ exports.delete = function(req, res) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Person deleted!' });
+        res.send();
     });
 };
 

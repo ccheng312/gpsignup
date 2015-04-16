@@ -14,13 +14,12 @@ exports.create = function(req, res) {
     var location = new Location(req.body);
 
     // save the location and check for errors
-    location.save(function(err) {
+    location.save(function(err, loc) {
         if (err) {
             // TODO: make sure this works as expected.
             return res.send(err);
         }
-
-        res.json({ message: 'Location created!' });
+        res.send(loc);
     });
 };
 
@@ -31,22 +30,22 @@ exports.list = function(req, res) {
             return res.send(err);
         }
 
-        res.json(locations);
+        res.send(locations);
     });
 };
 
 exports.read = function(req, res) {
-    res.json(req.thisLocation);
+    res.send(req.thisLocation);
 };
 
 exports.update = function(req, res) {
     var location = _.extend(req.thisLocation, req.body);
 
-    location.save(function(err) {
+    location.save(function(err, loc) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Location updated!' });
+        res.send(loc);
     });
 };
 
@@ -57,7 +56,7 @@ exports.delete = function(req, res) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Location deleted!' });
+        res.send();
     });
 };
 

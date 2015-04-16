@@ -15,13 +15,12 @@ exports.create = function(req, res) {
     var slot = new Slot(req.body);
 
     // save the slot and check for errors
-    slot.save(function(err) {
+    slot.save(function(err, slot) {
         if (err) {
             // TODO: make sure this works as expected.
             return res.send(err);
         }
-
-        res.json({ message: 'Slot created!' });
+        res.send(slot);
     });
 };
 
@@ -32,22 +31,22 @@ exports.list = function(req, res) {
             return res.send(err);
         }
 
-        res.json(slots);
+        res.send(slots);
     });
 };
 
 exports.read = function(req, res) {
-    res.json(req.slot);
+    res.send(req.slot);
 };
 
 exports.update = function(req, res) {
     var slot = _.extend(req.slot, req.body);
 
-    slot.save(function(err) {
+    slot.save(function(err, slot) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Slot updated!' });
+        res.send(slot);
     });
 };
 
@@ -58,7 +57,7 @@ exports.delete = function(req, res) {
         if (err) {
             return res.send(err);
         }
-        res.json({ message: 'Slot deleted!' });
+        res.send();
     });
 };
 
