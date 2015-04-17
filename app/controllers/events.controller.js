@@ -76,7 +76,10 @@ exports.getSlots = function(req, res) {
             if (err) {
                 return res.send(err);
             }
-            res.send(slots);
+            var publicSlots = _.map(slots, function(slot) {
+                return _.omit(slot, 'people');
+            });
+            res.send(publicSlots);
         });
 };
 
