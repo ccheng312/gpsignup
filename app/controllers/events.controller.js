@@ -62,14 +62,8 @@ exports.delete = function(req, res) {
     });
 };
 
-exports.getSlots = function(req, res) {
-    var signupEvent = req.signupEvent;
-    var queryParams = { slotEvent: signupEvent._id };
-
-    if (req.query.slotLocation) {
-        console.log("Found slot location");
-        queryParams.slotLocation = req.query.slotLocation;
-    }
+exports.getPublicSlots = function(req, res) {
+    var queryParams = generateQueryParams(req);
 
     Slot.find(queryParams)
         .exec(function (err, slots) {
@@ -82,6 +76,18 @@ exports.getSlots = function(req, res) {
             res.send(publicSlots);
         });
 };
+
+exports.getAdminSlots = function(req, res) {
+    var queryParams = generateQueryParams(req);
+
+    Slot.find(queryParams)
+        .exec(function (err, slots) {
+            if (err) {
+                return res.send(err);
+            }
+            res.send(slots);
+        });
+}
 
 /**
  * Middleware
@@ -103,6 +109,17 @@ exports.eventById = function(req, res, next, id) {
 /**
  * Helper Functions
  */
+
+ function generateQueryParams(req) {
+    var signupEvent = req.signupEvent;
+    var queryParams = { slotEvent: signupEvent._id };
+
+    if (req.query.slotLocation) {
+        queryParams.slotLocation = req.query.slotLocation;
+    }
+
+    return queryParams;
+ }
 
  function generateSlots(signupEvent) {
     var startDate = signupEvent.start;
