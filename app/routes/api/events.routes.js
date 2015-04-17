@@ -17,6 +17,9 @@ router.route('/events/:eventId')
 router.route('/events/:eventId/slots')
     .get(events.getPublicSlots);
 
+router.route('/events/:eventId/signup')
+    .post(events.signup);
+
 // This middleware makes the event available as req.signupEvent when you supply eventId
 router.param('eventId', events.eventById);
 

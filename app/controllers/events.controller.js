@@ -89,6 +89,13 @@ exports.getAdminSlots = function(req, res) {
         });
 }
 
+exports.signup = function(req, res) {
+    var signupEvent = req.signupEvent;
+
+    addSlotsForPerson(req);
+    addSignupToSlots(req);
+}
+
 /**
  * Middleware
  */
@@ -110,7 +117,17 @@ exports.eventById = function(req, res, next, id) {
  * Helper Functions
  */
 
- function generateQueryParams(req) {
+function addSlotsForPerson(req, signupEvent, person) {
+    console.log("Update the person with slot information");
+}
+
+function addSignupToSlots(req, signupEvent) {
+    console.log("Add person to each slot");
+
+    // Here we want to loop through the request and add the person's info
+}
+
+function generateQueryParams(req) {
     var signupEvent = req.signupEvent;
     var queryParams = { slotEvent: signupEvent._id };
 
@@ -119,9 +136,9 @@ exports.eventById = function(req, res, next, id) {
     }
 
     return queryParams;
- }
+}
 
- function generateSlots(signupEvent) {
+function generateSlots(signupEvent) {
     var startDate = signupEvent.start;
     var endDate = signupEvent.end;
     var duration = moment.duration(signupEvent.duration, 'minutes');
@@ -167,7 +184,7 @@ exports.eventById = function(req, res, next, id) {
         currentEndDate = moment(endDate);
         currentEndDate.month(currentStartDate.month()).date(currentStartDate.date());
     }
- }
+}
 
 
 

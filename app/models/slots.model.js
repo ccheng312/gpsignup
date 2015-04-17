@@ -18,6 +18,7 @@ var SlotSchema = new Schema({
     slotEvent: { type: Schema.Types.ObjectId, required: true, index: true, ref: 'Event' },
     people: [{
                 person: {type: Schema.Types.ObjectId, ref: 'Person'},
+                name: {type: String, maxLength: 70},
                 comment: {type: String, maxLength: 100},
                 approved: {type: Boolean, default: false }
             }]
