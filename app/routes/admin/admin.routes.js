@@ -3,6 +3,10 @@ var router = express.Router();
 
 router.use('/', function (req,res,next) {
     console.log("Admin stuff");
+
+    // This is where we would want to check that the user is logged in
+    // and maybe set some stuff to indicate that this is a legitimate user
+    // also to check if they are an admin for event creation and stuff
     next();
 });
 

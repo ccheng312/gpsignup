@@ -15,8 +15,6 @@ var router = express.Router();
 router.route('/slots/:slotId')
     // get the slot with that id (accessed at GET /api/slots/:slotId)
     .get(slots.read)
-    // update the slot with that id (accessed at PUT /api/slots/:slotId)
-    .put(slots.update)
 
 
 // This middleware makes the slot available as req.slot when you supply slotId
