@@ -12,10 +12,6 @@ var people = require('../../controllers/people.controller');
  */
 var router = express.Router();
 
-router.route('/people')
-    .post(people.create);
-
-
 router.route('/people/:personId')
     // get the person with that id (accessed at GET /admin/people/:personId)
     .get(people.read)
