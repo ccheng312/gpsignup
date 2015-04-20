@@ -12,7 +12,7 @@ var EventSchema   = new Schema({
     //password: { type: String, maxlength: 100 },
     isPrivate: { type: Boolean, default: false },
     enabled: { type: Boolean, default: true },
-    locations: [{ type: String, maxlength: 50 }]
+    locations: [{ type: String, maxlength: 50, required: true }]
 });
 
 mongoose.model('Event', EventSchema);
