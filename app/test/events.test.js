@@ -8,14 +8,14 @@ var _ = require('lodash'),
     Slot = mongoose.model('Slot');
 
 var start = moment();
-var end = moment(start).add(1, 'days').add(3, 'hours');
+var end = moment(start).add(1, 'days').add(2, 'hours');
 var ev = {
     name: 'Test Event',
     description: 'this is a test',
     start: start.toISOString(),
     end: end.toISOString(),
     duration: 60,
-    locations: ['somewhere']
+    locations: ['somewhere', 'here']
 };
 
 describe('Event tests', function() {
@@ -90,7 +90,7 @@ describe('Event tests', function() {
                     if (!slots) {
                         assert(false, 'No slots found!');
                     }
-                    assert.equal(slots.length, 6);
+                    assert.equal(slots.length, 8);
                 });
             })
             // delete event
@@ -127,13 +127,18 @@ describe('Event tests', function() {
                 return request.get('/api/events/' + id + '/slots')
                     .expect(200)
                     .expect(function(res) {
-                        assert(res.body.length === 6, 'Wrong number of slots found');
+                        assert(res.body.length === 8, 'Wrong number of slots found');
                         assert.notProperty(res.body[0], 'people', 'Public slots should not show people');
-                        [0, 1].forEach(function(i) {
-                            [0, 1, 2].forEach(function(j) {
-                                var startTime = moment(start);
-                                startTime.add(i, 'days').add(j, 'hours');
-                                assert(_.find(res.body, { startTime: startTime.toISOString() }));
+                        ev.locations.forEach(function(loc) {
+                            [0, 1].forEach(function(i) {
+                                [0, 1].forEach(function(j) {
+                                    var startTime = moment(start);
+                                    startTime.add(i, 'days').add(j, 'hours');
+                                    assert(_.find(res.body, {
+                                        startTime: startTime.toISOString(),
+                                        slotLocation: loc
+                                    }));
+                                });
                             });
                         });
                     });
