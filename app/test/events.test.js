@@ -86,8 +86,7 @@ describe('Event tests', function() {
             })
             // verify slots
             .then(function() {
-                return Slot.find().exec().then(function(err, slots) {
-                    console.log(slots);
+                return Slot.find().exec(function(err, slots) {
                     if (!slots) {
                         assert(false, 'No slots found!');
                     }
@@ -107,7 +106,7 @@ describe('Event tests', function() {
             // verify slots deleted
             .then(function() {
                 return Slot.find().exec(function(err, slots) {
-                    assert.isUndefined(slots, 'Slots were not deleted!');
+                    assert(slots.length === 0, 'Slots were not deleted!');
                 });
             })
             .then(function() { done(); })

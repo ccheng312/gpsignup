@@ -166,7 +166,7 @@ function generateSlots(signupEvent) {
         slotLocation: null,
         slotEvent: signupEvent._id
     };
-    var slots = []
+    var slots = [];
 
     var currentStartDate = moment(startDate);
     var currentEndDate = moment(endDate);
