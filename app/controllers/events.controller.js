@@ -7,7 +7,8 @@ var mongoose = require('mongoose'),
     Event = mongoose.model('Event'),
     Slot = mongoose.model('Slot'),
     moment = require('moment'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    Promise = require('bluebird');
 
 /**
  * Event Methods
@@ -21,8 +22,15 @@ exports.create = function(req, res) {
             // TODO: make sure this works as expected.
             return res.send(err);
         }
-        generateSlots(signupEvent);
-        res.send(evt);
+        Promise.map(generateSlots(signupEvent), function(slot) {
+            return slot.save();
+        })
+        .then(function() {
+            res.send(evt);
+        })
+        .catch(function() {
+            res.status(500).send(err);
+        });
     });
 };
 
@@ -150,7 +158,7 @@ function generateSlots(signupEvent) {
     var startDate = signupEvent.start;
     var endDate = signupEvent.end;
     var duration = moment.duration(signupEvent.duration, 'minutes');
-    var slotParams = {
+    var slotTemplate = {
         startTime: null,
         capacity:  signupEvent.defaultCapacity,
         quantity: 0,
@@ -158,6 +166,7 @@ function generateSlots(signupEvent) {
         slotLocation: null,
         slotEvent: signupEvent._id
     };
+    var slots = []
 
     var currentStartDate = moment(startDate);
     var currentEndDate = moment(endDate);
@@ -165,19 +174,15 @@ function generateSlots(signupEvent) {
 
     for (var i = 0; i < signupEvent.locations.length; i++) {
         //Loop through each location so we do slots for each location
-        slotParams.slotLocation = signupEvent.locations[i];
+        slotTemplate.slotLocation = signupEvent.locations[i];
         while (!currentEndDate.isAfter(endDate, 'day')) {
             // While our current end date hasn't hit the final end date for the event
             while (currentStartDate.isBefore(currentEndDate)) {
+                var slotParams = _.clone(slotTemplate);
                 // While our current looping start time is before the day's end time
                 slotParams.startTime = currentStartDate.clone().toDate();
                 var newSlot = new Slot(slotParams);
-                newSlot.save(function(err) {
-                    if (err) {
-                    // TODO: make sure this works as expected.
-                        return res.send(err);
-                    }
-                });
+                slots.push(newSlot);
                 // Add the duration to our next slot time
                 currentStartDate.add(duration);
             }
@@ -192,6 +197,7 @@ function generateSlots(signupEvent) {
         currentEndDate = moment(endDate);
         currentEndDate.month(currentStartDate.month()).date(currentStartDate.date());
     }
+    return slots;
 }
 
 
