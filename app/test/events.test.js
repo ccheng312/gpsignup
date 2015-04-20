@@ -67,13 +67,10 @@ describe('Event tests', function() {
             })
             // verify deleted
             .then(function() {
-                request.get('/api/events/' + id)
-                    .expect(404);
-                done();
+                return request.get('/api/events/' + id)
+                    .expect(404, { message: 'Event not found.' });
             })
-            .catch(function(err) {
-                done(err);
-            });
+            .then(function() { done(); }, done);
     });
 
     it('creating/deleting an event should create/delete slots', function(done) {
@@ -107,14 +104,32 @@ describe('Event tests', function() {
             })
             // verify slots deleted
             .then(function() {
-                Slot.find().exec(function(err, slots) {
+                return Slot.find().exec(function(err, slots) {
                     assert.isUndefined(slots, 'Slots were not deleted!');
-                    done();
                 });
             })
-            .catch(function(err) {
-                done(err);
-            });
+            .then(function() { done(); }, done);
+    });
+
+    it('/events/{id}/slots should return event slots in public form', function(done) {
+        var id;
+        request.post('/api/events')
+            .send(ev)
+            .expect(200)
+            .expect(function(res) {
+                id = res.body._id;
+                assert.propertyVal(res.body, 'name', ev.name);
+            })
+            // test
+            .then(function() {
+                return request.get('/api/events/' + id + '/slots')
+                    .expect(200)
+                    .expect(function(res) {
+                        console.log(res.body);
+                        assert(res.body.length === 6, 'Wrong number of slots found');
+                    });
+            })
+            .then(function() { done(); }, done);
     });
 
     afterEach(function(done) {
