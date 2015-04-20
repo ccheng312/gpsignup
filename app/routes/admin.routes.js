@@ -5,6 +5,11 @@ var express = require('express'),
 
 router.path = '/admin';
 
+router.use('/', function(req, res, next) {
+    console.log("This is admin route");
+    next();
+});
+
 router.get('/', function(req, res) {
     res.send({ message: 'This is the main ADMIN location' });
 });
