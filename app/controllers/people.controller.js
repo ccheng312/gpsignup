@@ -71,7 +71,7 @@ exports.personById = function(req, res, next, id) {
             return next(err);
         }
         if (!person) {
-            return next(new Error('Failed to load person ' + id));
+            return res.status(404).send({ message: 'Person not found.' });
         }
         req.person = person;
         next();

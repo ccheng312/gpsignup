@@ -94,7 +94,7 @@ exports.slotById = function(req, res, next, id) {
             return next(err);
         }
         if (!slot) {
-            return next(new Error('Failed to load slot ' + id));
+            return res.status(404).send({ message: 'Slot not found.' });
         }
         req.slot = slot;
         next();

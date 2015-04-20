@@ -113,7 +113,7 @@ exports.eventById = function(req, res, next, id) {
             return next(err);
         }
         if (!signupEvent) {
-            return next(new Error('Failed to load event ' + id));
+            return res.status(404).send({ message: 'Event not found.' });
         }
         req.signupEvent = signupEvent;
         next();

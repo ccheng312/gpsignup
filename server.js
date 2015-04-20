@@ -50,7 +50,12 @@ app.use('/api', require('./app/routes'));
 
 // Error Handling
 app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
+    if (err) {
+        console.log(err);
+        res.status(err.status || 500).send({ message: 'Something broke!' });
+    } else {
+        res.status(404).send({ message: 'Not found.' });
+    }
 });
 
 module.exports = app;
