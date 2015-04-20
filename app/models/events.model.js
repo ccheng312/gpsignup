@@ -15,6 +15,6 @@ var EventSchema   = new Schema({
     locations: [{ type: String, maxlength: 50, required: true }]
 });
 
-EventSchema.path('locations').required(true);
+EventSchema.path('locations').required(true, "'locations' is required it cannot be empty");
 
 mongoose.model('Event', EventSchema);
