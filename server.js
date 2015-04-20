@@ -42,9 +42,11 @@ mongoose.connect(config.db, function(err) {
 });
 
 // Register models and routes
+console.log('Registering models');
 require('./app/models');
-require('./app/routes/api')(app);
-require('./app/routes/admin')(app);
+
+console.log('Registering api routes');
+app.use('/api', require('./app/routes'));
 
 // Error Handling
 app.use(function(err, req, res, next) {

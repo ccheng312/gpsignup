@@ -61,6 +61,30 @@ exports.delete = function(req, res) {
     });
 };
 
+exports.adminList = function(req, res) {
+    res.status(501).send({ error: 'not implemented'});
+};
+
+exports.adminRead = function(req, res) {
+    res.status(501).send({ error: 'not implemented'});
+};
+
+exports.enabled = function(req, res) {
+    res.status(501).send({ error: 'not implemented'});
+};
+
+exports.enable = function(req, res) {
+    res.status(501).send({ error: 'not implemented'});
+};
+
+exports.capacity = function(req, res) {
+    res.status(501).send({ error: 'not implemented'});
+};
+
+exports.changeCapacity = function(req, res) {
+    res.status(501).send({ error: 'not implemented'});
+};
+
 /**
  * Middleware
  */

@@ -87,14 +87,18 @@ exports.getAdminSlots = function(req, res) {
             }
             res.send(slots);
         });
-}
+};
+
+exports.adminList = function(req, res) {
+    res.status(501).send({ error: 'not implemented'});
+};
 
 exports.signup = function(req, res) {
     var signupEvent = req.signupEvent;
 
     addSlotsForPerson(req);
     addSignupToSlots(req);
-}
+};
 
 /**
  * Middleware
