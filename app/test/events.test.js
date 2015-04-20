@@ -14,7 +14,8 @@ var ev = {
     description: 'this is a test',
     start: start.toISOString(),
     end: end.toISOString(),
-    duration: 60
+    duration: 60,
+    locations: ['somewhere']
 };
 
 describe('Event tests', function() {
@@ -70,7 +71,8 @@ describe('Event tests', function() {
                 return request.get('/api/events/' + id)
                     .expect(404, { message: 'Event not found.' });
             })
-            .then(function() { done(); }, done);
+            .then(function() { done(); })
+            .catch(done);
     });
 
     it('creating/deleting an event should create/delete slots', function(done) {
@@ -108,7 +110,8 @@ describe('Event tests', function() {
                     assert.isUndefined(slots, 'Slots were not deleted!');
                 });
             })
-            .then(function() { done(); }, done);
+            .then(function() { done(); })
+            .catch(done);
     });
 
     it('/events/{id}/slots should return event slots in public form', function(done) {
@@ -125,11 +128,12 @@ describe('Event tests', function() {
                 return request.get('/api/events/' + id + '/slots')
                     .expect(200)
                     .expect(function(res) {
-                        console.log(res.body);
                         assert(res.body.length === 6, 'Wrong number of slots found');
+                        assert.notProperty(res.body[0], 'people', 'Public slots should not show people');
                     });
             })
-            .then(function() { done(); }, done);
+            .then(function() { done(); })
+            .catch(done);
     });
 
     afterEach(function(done) {

@@ -15,4 +15,6 @@ var EventSchema   = new Schema({
     locations: [{ type: String, maxlength: 50, required: true }]
 });
 
+EventSchema.path('locations').required(true);
+
 mongoose.model('Event', EventSchema);
