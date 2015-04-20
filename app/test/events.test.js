@@ -129,6 +129,13 @@ describe('Event tests', function() {
                     .expect(function(res) {
                         assert(res.body.length === 6, 'Wrong number of slots found');
                         assert.notProperty(res.body[0], 'people', 'Public slots should not show people');
+                        [0, 1].forEach(function(i) {
+                            [0, 1, 2].forEach(function(j) {
+                                var startTime = moment(start);
+                                startTime.add(i, 'days').add(j, 'hours');
+                                assert(_.find(res.body, { startTime: startTime.toISOString() }));
+                            });
+                        });
                     });
             })
             .then(function() { done(); })
