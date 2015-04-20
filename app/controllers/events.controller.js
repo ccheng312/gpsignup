@@ -54,27 +54,31 @@ exports.update = function(req, res) {
 exports.delete = function(req, res) {
     var signupEvent = req.signupEvent;
 
-    signupEvent.remove(function(err) {
-        if (err) {
-            return res.send(err);
-        }
-        res.send();
-    });
+    Slot.remove({ slotEvent: signupEvent._id })
+        .exec()
+        .then(function() {
+            signupEvent.remove(function(err) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    res.send();
+                }
+            });
+        }, function(err) {
+            res.send(err);
+        });
 };
 
 exports.getPublicSlots = function(req, res) {
     var queryParams = generateQueryParams(req);
 
-    Slot.find(queryParams)
-        .exec(function (err, slots) {
-            if (err) {
-                return res.send(err);
-            }
-            var publicSlots = _.map(slots, function(slot) {
-                return _.omit(slot, 'people');
-            });
-            res.send(publicSlots);
-        });
+    Slot.find(queryParams, '-people', function(err, slots) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(slots);
+        }
+    });
 };
 
 exports.getAdminSlots = function(req, res) {
