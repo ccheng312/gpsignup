@@ -80,7 +80,7 @@ exports.delete = function(req, res) {
 exports.getPublicSlots = function(req, res) {
     var queryParams = generateQueryParams(req);
 
-    Slot.find(queryParams, '-people', function(err, slots) {
+    Slot.find(queryParams, '-signups', function(err, slots) {
         if (err) {
             res.send(err);
         } else {

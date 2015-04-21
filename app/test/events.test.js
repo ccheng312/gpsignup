@@ -128,7 +128,7 @@ describe('Event tests', function() {
                     .expect(200)
                     .expect(function(res) {
                         assert(res.body.length === 8, 'Wrong number of slots found');
-                        assert.notProperty(res.body[0], 'people', 'Public slots should not show people');
+                        assert.notProperty(res.body[0], 'signups', 'Public slots should not show signups');
                         ev.locations.forEach(function(loc) {
                             [0, 1].forEach(function(i) {
                                 [0, 1].forEach(function(j) {
